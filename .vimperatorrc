@@ -1,0 +1,242 @@
+"Vimperator 2.4pre(20100911) (created: 2010/09/11 18:01:26)
+"skashu .vimperatorrc
+
+command! -nargs=+ lazy autocmd VimperatorEnter .* <args>
+
+" /* Options */{{{
+" // Settings //
+set activate=
+set complete=tslfS
+set focuscontent
+set guioptions=
+set hlsearch
+set incsearch
+set maxitems=10
+set newtab=all
+"set nextpattern=次ヘ,次(の)?ページへ,→b,\\bnext\\b,^>$,^(>>|»)$,^(>|»),(>|»)$,\\bmore\\b,\\bolder\\b
+"set previouspattern=前へ,前(の)?ページへ,b←,\\bprev|previous\\b,^<$,^(<<|«)$,^(<|«),(<|«)$,\\bnewer\\b
+set showtabline=0
+set showstatuslinks=2
+set wildoptions=auto
+" Beepを殺す
+set visualbell
+hi Bell display: none;
+hi Hint -append margin-top:-0.8em; margin-left: -0.8em;
+
+" // about:config //
+" ページのアクセスキーを無効化
+set! ui.key.generalAccessKey=0
+
+" ポップアップ許可数を拡張 cf.http://la.ma.la/blog/diary_200611171115.htm
+set! dom.popup_maximum=9999
+
+" タブの開く位置を右端にする
+set! browser.tabs.insertRelatedAfterCurrent=false
+
+" Gmail/LDR/Fastladder/OpenFL/はてブでは新規タブをバックグラウンドで開く
+autocmd LocationChange ^(?!https?://(mail\.google\.com\/(mail|a)\/|(reader\.livedoor\.com|fastladder\.com|0\.0\.0\.0\:3000)/reader/|b\.hatena\.ne\.jp/(?!entry/http|articles|guide))) :set! browser.tabs.loadDivertedInBackground=false
+autocmd LocationChange ^https?://(mail\.google\.com\/(mail|a)\/|(reader\.livedoor\.com|fastladder\.com|0\.0\.0\.0\:3000)/reader/|b\.hatena\.ne\.jp/(?!entry/http|articles|guide)) :set! browser.tabs.loadDivertedInBackground=true
+"}}}
+
+" /* Mappings */{{{
+noremap ; :
+noremap : ;
+noremap <Leader> <Nop>
+
+nnoremap , mA
+nnoremap . `A
+nnoremap ! :set invum<CR>
+nnoremap a :bmarks!<Space>
+nnoremap j 5<C-e>
+nnoremap k 5<C-y>
+nnoremap gm :tabmove!<Space>+1<CR>
+nnoremap gM :tabmove!<Space>-1<CR>
+nnoremap gI gi<C-u><Esc>
+nnoremap <C-s> :source<Space>~/.vimperatorrc<CR>
+nnoremap <C-h> :help<Space>
+
+vnoremap <silent> <C-g> y<Esc><Esc>P
+
+cnoremap <C-j> <Nop>
+cnoremap <C-n> <Tab>
+cnoremap <C-p> <S-Tab>
+
+inoremap <C-n> <Down>
+inoremap <C-p> <Up>
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+"}}}
+
+" /* Plugins */{{{
+" appendAnchor.js
+let g:auto_append_anchor = "true"
+
+" copy.js
+noremap c :copy<Space>
+javascript <<EOM
+liberator.globalVariables.copy_templates = [
+{ label: 'titleAndURL',    value: '%TITLE% %URL%' },
+{ label: 'title',          value: '%TITLE%' },
+{ label: 'url',            value: '%URL%' },
+{ label: 'markdown',       value: '[%TITLE%](%URL% "%TITLE%")' },
+{ label: 'markdownsel',    value: '[%SEL%](%URL% "%TITLE%")' },
+{ label: 'htmlblockquote', value: '<blockquote cite="%URL%" title="%TITLE%">%HTMLSEL%</blockquote>' },
+{ label: 'hatena',         value: '[%URL%:title=%TITLE%]' },
+{ label: 'hatenabookmark', value: '<a href="%URL%">%TITLE%</a><a href="http://b.hatena.ne.jp/entry/%URL%"><img src="http://b.hatena.ne.jp/entry/image/%URL%" border=0></a>' },
+{ label: 'hatenacite',     value: '>%URL%:title=%TITLE%>\n%SEL%\n<<' }
+];
+EOM
+
+" migemo_hint.js
+set hintmatching=custom
+
+" migratestatus.js
+javascript <<EOM
+    liberator.globalVariables.migrate_elements = [
+        {
+            // icon that show the existence of RSS and Atom on current page
+            id:    'feed-button',
+            dest:  'security-button',
+            after: true,
+        },
+        {
+            // favicon of awesome bar
+            id:    'page-proxy-stack',
+            dest:  'liberator-statusline',
+            after: false,
+        },
+    ];
+EOM
+
+" nextlink.js
+let g:nextlink_followlink = "true"
+let g:nextlink_nositeinfo_act = "f"
+
+" pino.js
+nnoremap O :pino<CR>
+
+" pluginManager.js
+nnoremap g<C-h> :pluginhelp<Space>-v<Space>
+
+" refcontrol.js
+let g:refcontrol_enabled = "true"
+javascript <<EOM
+liberator.globalVariables.refcontrol={
+ '@DEFAULT'   : '@FORGE',
+};
+EOM
+
+" sbmcommentsviewer.js
+let g:def_sbm_format = "timestamp,id,tagsAndComment"
+let g:def_sbms = "dlh"
+nnoremap v :viewSBMComments<CR>
+
+"subscldr.js
+nnoremap gl :subscldr<CR>
+nnoremap gf :subscfl<CR>
+
+"twittperator.js
+nnoremap g@ :tw!@<CR>
+let g:twittperator_use_chirp = 0
+let g:twittperator_plugin_dump_msg = 0
+let g:twittperator_plugin_echo_tweet = 0
+let g:twittperator_plugin_reply_popup_alert = 1
+let g:twittperator_plugin_reply_popup_alert_username = "skashu"
+
+" localkeymode.js
+let g:localkeymode_enable = "true"
+javascript <<EOM
+liberator.globalVariables.localKeyMappings=[
+  // Youtube/Nicovideo (use: stella.js)
+  [/^(http:\/\/(es|www).nicovideo.jp\/watch|http:\/\/(jp|www)\.youtube\.com\/watch)/, [
+    [['p'  ], ':stplay',        ],
+    [['m'  ], ':stmute',        ],
+    [['c'  ], ':stcomment',     ],
+    [['zz' ], ':stlarge',       ],
+    [['r'  ], ':strepeat',      ],
+    [['+'  ], ':stvolume! 10',  ],
+    [['-'  ], ':stvolume! -10', ],
+    [['0'  ], ':stseek 0',      ],
+    [['H'  ], ':stseek! -10',   ],
+    [['L'  ], ':stseek! 10',    ],
+  ]],
+//  // LDR
+//  [/^http:\/\/reader\.livedoor\.com\/reader/, [
+//    ['U', function () window.content.window.wrappedJSObject.Control.unsubscribe()],
+//  ]],
+//  // pixiv
+//  [/^http:\/\/www\.pixiv\.net\/member_illust\.php\?mode = medium\&illust_id = /, [
+//    ['zz',  function () content.document.changeImageSize()],
+//    ['<Leader>i', 'f\u7d75\u3092\u516c\u958b'],
+//    [
+//      'p',
+//      function (count){
+//        if (count > 1)
+//          AnkPixiv.rate(count);
+//        else
+//          dl();
+//      },
+//      {count: true}
+//    ],
+//  ]],
+]
+EOM
+
+" feedSomeKeys_3.js
+" Gmail
+lazy fmaps -u='^https?://mail\.google\.com/(mail|a)/' c / J,j K,k n p o O,o u e x s r a # [ ] z ? ! gi gs gt gd ga gc *a *n
+" LDR/Fastladder (use: tombloo.xpi, ldr+tombloo.user.js, ldr_relative_rate.user.js)
+lazy fmaps -u='^http://(reader\.livedoor|fastladder)\.com/reader/' j k s a w q p v c z i r < > <Space> <S-Space> o,vj
+lazy fmaps -u='^http://(reader\.livedoor|fastladder)\.com/reader/' -events=vkeypress C Z W Q T e,Tj
+" Twitter
+lazy fmaps -u='^https?://twitter\.com/.*' ? j k <Space> / .
+lazy fmaps -u='^https?://twitter\.com/.*' -events=vkeydown f r m n gh gr gp gf gm gu
+"}}}
+
+" /* Javascripts */{{{
+" LDRで購読停止するコマンド
+command! ldrunsubscribe js window.content.window.wrappedJSObject.Control.unsubscribe()
+" LDRに移動したときには"U"にコマンドをマップする
+autocmd LocationChange .* :map U <Nop>
+autocmd LocationChange reader\\.livedoor\\.com :noremap U :ldrunsubscribe<CR>
+"livedoor Reader の棒人間メッセージをechoに横流し
+"javascript <<EOM
+"content.document.getElementById('message').
+"  addEventListener(
+"    'DOMSubtreeModified',
+"    function (event) liberator.echo(event.target.textContent, commandline.FORCE_SINGLELINE),
+"    true
+"  );
+"EOM
+"}}}
+ 
+" /* Abbreviations */{{{
+cabbrev .a amazon-search
+cabbrev .c cookpad-search
+cabbrev .g google
+cabbrev .p pixiv-search
+cabbrev .w wikipedia-search
+
+" // twittperator.js (bitly.js)
+abbrev -j .title '"' + buffer.title + '"'
+abbrev #v        #vimperator
+abbrev -j .url   plugins.bitly.bitly(buffer.URL)
+abbrev -j .tu    abbreviations.get(modes.INSERT, '.title').text + ' - ' + plugins.bitly.bitly(buffer.URL)
+"cabbrev -j .reply     let (e=doc.querySelector('.hentry.status'))('@' + e.getAttribute('class').match(/u-(\S+)/)[1] + '#' + e.getAttribute('id').match(/\d+/))
+"cabbrev -j .rt        let (e=doc.querySelector('.hentry.status'))('RT @' + e.getAttribute('class').match(/u-(\S+)/)[1] + '#' + e.getAttribute('id').match(/\d+/) + ': ' + doc.querySelector('.entry-content').textContent.trim())
+cabbrev -j .amazon    let(asin=content.document.getElementById('ASIN').value,base='http://amazon.jp/',res)['dp/','o/ASIN/','gp/product/'].some(function(it)((content.document.location.pathname.indexOf(it)>1)&&(res=base+it+asin)))&&res;
+"}}}
+
+colorscheme sweets
+" ex mode時IMEをOFF
+style -name commandline-ime chrome://* #liberator-commandline-command input { ime-mode: inactive; }
+hi Hint -append margin-top:-0.8em; margin-left: -0.8em;
+hi! CompResult -a  -moz-binding: url(chrome://liberator/content/bindings.xml#compitem-td);
+hi! CompDesc   -a  -moz-binding: url(chrome://liberator/content/bindings.xml#compitem-td);
+source ~/.vimperator/styles/BrightFocus.css
+source ~/.vimperator/styles/LDR_Article.css
+
+echo "loading .vimperatorrc..."
+
+" vim: set fdm=marker:
+" vim: set ft=vimperator:
